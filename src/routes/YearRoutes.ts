@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { makeYearController } from "../factories/YearFactory";
 import { authMiddleware } from "../middlewares/AuthMiddleware";
-import { ensureTeacher } from "../middlewares/ensureTeacher";
+import { ensureTeacher } from "../middlewares/EnsureTeacher";
 
 export const yearRoutes = Router();
 

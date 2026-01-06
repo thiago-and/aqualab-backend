@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Year } from "../entities/Year";
+import { Year } from "../entities/school/Year";
 import { YearService } from "../services/YearService";
 
 

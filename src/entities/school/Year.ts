@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Teacher } from "./Teacher";
-import { Student } from "./Student";
-import { Quiz } from "./Quiz";
+import { Teacher } from "../users/Teacher";
+import { Student } from "../users/Student";
+import { Quiz } from "../quizzes/Quiz";
 
 @Entity('years')
 export class Year {

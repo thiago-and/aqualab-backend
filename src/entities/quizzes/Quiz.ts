@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Year } from "./Year";
-import { Teacher } from "./Teacher";
 import { Question } from "./Question";
+import { Year } from "../school/Year";
+import { Teacher } from "../users/Teacher";
 
 @Entity('quiz_quizzes')
 export class Quiz {

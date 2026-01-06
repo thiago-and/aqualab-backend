@@ -1,4 +1,4 @@
-import { Year } from "../entities/Year";
+import { Year } from "../entities/school/Year";
 import { YearRepository } from "../repositories/YearRepository";
 
 export class YearService {

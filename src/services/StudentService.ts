@@ -1,4 +1,4 @@
-import { Student } from "../entities/Student";
+import { Student } from "../entities/users/Student";
 import { StudentRepository } from "../repositories/StudendRepository";
 import { CreateStudentDto } from "../dtos/CreateStudentDto";
 import { YearRepository } from "../repositories/YearRepository";

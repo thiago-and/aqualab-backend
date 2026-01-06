@@ -1,4 +1,4 @@
-import { Student } from "../entities/Student";
+import { Student } from "../entities/users/Student";
 import { StudentService } from "../services/StudentService";
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";

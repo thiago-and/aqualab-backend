@@ -1,4 +1,3 @@
-import { sign } from "jsonwebtoken";
 import { Teacher } from "../entities/Teacher";
 import { TeacherRepository } from "../repositories/TeacherRepository";
 import bcrypt from "bcryptjs";

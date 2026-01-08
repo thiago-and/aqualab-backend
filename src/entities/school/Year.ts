@@ -13,7 +13,7 @@ export class Year {
     @Column({ nullable: false })
     year!: number;
 
-    @ManyToOne(() => Teacher, teacher => teacher.years)
+    @ManyToOne(() => Teacher, teacher => teacher.years, { nullable: false })
     teacher!: Teacher;
 
     @OneToMany(() => Student, student => student.year)

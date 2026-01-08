@@ -12,13 +12,16 @@ export class Quiz {
     @Column({ nullable: false })
     title!: string;
 
-    @ManyToOne(()=> Year, year => year.quizzes, { nullable: false })
+    @ManyToOne(() => Year, year => year.quizzes, { nullable: false })
     year!: Year;
 
-    @ManyToOne(()=> Teacher, teacher => teacher.quizzes, { nullable: false })
+    @ManyToOne(() => Teacher, teacher => teacher.quizzes, { nullable: false })
     teacher!: Teacher;
 
-    @OneToMany(() => Question, question => question.quiz)
+    @OneToMany(() => Question, question => question.quiz, {
+        cascade: true,
+        onDelete: "CASCADE"
+    })
     questions!: Question[];
 
     @CreateDateColumn()

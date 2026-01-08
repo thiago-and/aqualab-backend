@@ -10,10 +10,13 @@ export class Option {
     @Column({ nullable: false })
     text!: string;
 
-    @Column({ name: "is_correct", nullable: false })
+    @Column({ name: "is_correct", default: false })
     isCorrect!: boolean;
 
-    @ManyToOne(() => Question, question => question.options, { nullable: false })
+    @ManyToOne(() => Question, question => question.options, {
+        onDelete: "CASCADE",
+        nullable: false
+    })
     question!: Question;
 
 }

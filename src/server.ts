@@ -7,6 +7,7 @@ import { teacherRoutes } from './routes/TeacherRoutes';
 import { studentRoutes } from './routes/StudentRoutes';
 import "dotenv/config";
 import { authRoutes } from './routes/AuthRoutes';
+import { quizRoutes } from './routes/QuizRoutes';
 
 const server = express();
 
@@ -16,6 +17,7 @@ server.use("/api", yearRoutes);
 server.use("/api", teacherRoutes);
 server.use("/api", studentRoutes);
 server.use("/api", authRoutes);
+server.use("/api", quizRoutes);
 
 server.get('/', (req: Request, res: Response) => {
   return res.status(200).json({ message: 'Aqualab Backend is running' });

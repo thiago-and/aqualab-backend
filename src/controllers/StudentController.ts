@@ -8,14 +8,12 @@ import { CreateStudentDto } from "../dtos/CreateStudentDto";
 
 export class StudentController {
 
-    studentService: StudentService;
+    private studentService: StudentService;
 
     constructor(studentService: StudentService) {
         this.studentService = studentService;
     }
-
-
-
+    
     createStudent = async (request: Request, response: Response): Promise<Response> => {
 
         const dto = plainToInstance(CreateStudentDto, request.body);

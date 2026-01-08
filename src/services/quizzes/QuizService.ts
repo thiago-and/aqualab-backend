@@ -1,8 +1,8 @@
-import { QuizPublicDTO } from "../dtos/QuizPublicDTO";
-import { Quiz } from "../entities/quizzes/Quiz";
-import { QuizRepository } from "../repositories/QuizRepository";
-import { TeacherRepository } from "../repositories/TeacherRepository";
-import { YearRepository } from "../repositories/YearRepository";
+import { QuizPublicDTO } from "../../dtos/QuizPublicDTO";
+import { Quiz } from "../../entities/quizzes/Quiz";
+import { QuizRepository } from "../../repositories/quizzes/QuizRepository";
+import { TeacherRepository } from "../../repositories/TeacherRepository";
+import { YearRepository } from "../../repositories/YearRepository";
 
 export interface CreateQuizDTO {
     title: string;
@@ -125,7 +125,6 @@ export class QuizService {
         return await this.quizRepository.createQuiz(quiz);
     };
 
-
     deleteQuiz = async (
         quizId: string,
         teacherId: string
@@ -146,6 +145,10 @@ export class QuizService {
 
     getAllQuizzes = async (): Promise<Quiz[]> => {
         return this.quizRepository.getAllQuizzes();
+    }
+
+    async listAvailableQuizzes(studentId: string) {
+        return this.quizRepository.findAvailableForStudent(studentId);
     }
 
     getQuizById = async (

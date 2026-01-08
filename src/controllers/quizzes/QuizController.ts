@@ -1,4 +1,4 @@
-import { CreateQuizDTO, QuizService, UpdateQuizDTO } from "../services/QuizService";
+import { CreateQuizDTO, QuizService, UpdateQuizDTO } from "../../services/quizzes/QuizService";
 import { Request, Response } from "express";
 
 export class QuizController {
@@ -57,6 +57,13 @@ export class QuizController {
             });
         }
     };
+
+    listAvailable = async (req: Request, res: Response) => {
+        const studentId = req.user!.id;
+        const quizzes = await this.quizService.listAvailableQuizzes(studentId);
+        return res.json(quizzes);
+    };
+
 
     getAllQuizzes = async (request: Request, response: Response): Promise<Response> => {
         try {

@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGenerate
 import { Question } from "./Question";
 import { Year } from "../school/Year";
 import { Teacher } from "../users/Teacher";
+import { QuizAttempt } from "./QuizAttempt";
 
 @Entity('quiz_quizzes')
 export class Quiz {
@@ -23,6 +24,9 @@ export class Quiz {
         onDelete: "CASCADE"
     })
     questions!: Question[];
+
+    @OneToMany(() => QuizAttempt, attempt => attempt.quiz)
+    attempts!: QuizAttempt[];
 
     @CreateDateColumn()
     createdAt!: Date;

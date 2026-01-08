@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { makeStudentController } from "../factories/StudentFactory";
 
-
 export const studentRoutes = Router();
 
 const StudentController = makeStudentController();

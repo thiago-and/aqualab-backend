@@ -1,5 +1,6 @@
 import { EntityManager } from "typeorm";
-import { Quiz } from "../entities/quizzes/Quiz";
+import { Quiz } from "../../entities/quizzes/Quiz";
+import { QuizAttemptStatus } from "../../entities/quizzes/QuizAttempt";
 
 export class QuizRepository {
 
@@ -15,6 +16,22 @@ export class QuizRepository {
 
     deleteQuizById = async (quizId: string): Promise<void> => {
         await this.manager.delete(Quiz, quizId);
+    }
+
+    async findAvailableForStudent(studentId: string) {
+        return this.manager
+            .createQueryBuilder(Quiz, "quiz")
+            .leftJoin(
+                "quiz.attempts",
+                "attempt",
+                "attempt.studentId = :studentId AND attempt.status = :status",
+                {
+                    studentId,
+                    status: QuizAttemptStatus.FINISHED
+                }
+            )
+            .where("attempt.id IS NULL")
+            .getMany();
     }
 
     getQuizById = async (quizId: string): Promise<Quiz | null> => {
@@ -40,5 +57,7 @@ export class QuizRepository {
     updateQuiz = async (quiz: Quiz): Promise<Quiz> => {
         return this.manager.save(Quiz, quiz);
     }
+
+
 
 }

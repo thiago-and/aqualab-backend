@@ -2,7 +2,6 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 import { Quiz } from "./Quiz";
 import { Option } from "./Option";
 
-
 @Entity('quiz_questions')
 export class Question {
 

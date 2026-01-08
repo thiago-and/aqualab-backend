@@ -1,8 +1,16 @@
 import { DataSource } from "typeorm";
 
 export const AppDataSource = new DataSource({
-    type: "sqlite",
-    database: "./src/database/db.sqlite",
-    migrations: ["./src/database/migrations/*.ts"],
-    entities: [ __dirname + "/../entities/**/*.{ts,js}" ],
+    type: "mysql",
+    host: "localhost",
+    port: 3306,
+    username: "root",
+    password: "",
+    database: "aqualab",
+
+    synchronize: false,
+    logging: false,
+
+    entities: [__dirname + "/../entities/**/*.{ts,js}"],
+    migrations: [__dirname + "/migrations/**/*.{ts,js}"],
 });

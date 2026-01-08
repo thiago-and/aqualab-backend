@@ -6,7 +6,7 @@ interface JwtPayload {
     role: 'student' | 'teacher';
 }
 
-export function authMiddleware(
+export function ensureAuthenticated(
     request: Request,
     response: Response,
     next: NextFunction

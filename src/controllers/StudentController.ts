@@ -25,11 +25,6 @@ export class StudentController {
             });
         }
 
-        // const studentData = request.body as Partial<Student>;
-        // if (!studentData) {
-        //     return response.status(400).json({ error: "Request body is required" });
-        // }
-
         try {
             const student = await this.studentService.createStudent(dto);
             return response.status(201).json(student);

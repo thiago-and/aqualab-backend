@@ -1,9 +1,9 @@
-import { QuizController } from "../controllers/QuizController";
+import { QuizController } from "../controllers/quizzes/QuizController";
 import { AppDataSource } from "../database/data-source";
-import { QuizRepository } from "../repositories/QuizRepository";
+import { QuizRepository } from "../repositories/quizzes/QuizRepository";
 import { TeacherRepository } from "../repositories/TeacherRepository";
 import { YearRepository } from "../repositories/YearRepository";
-import { QuizService } from "../services/QuizService";
+import { QuizService } from "../services/quizzes/QuizService";
 
 
 export function makeQuizController() {

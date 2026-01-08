@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Year } from "./Year";
 import { Student } from "./Student";
+import { Year } from "../school/Year";
+import { Quiz } from "../quizzes/Quiz";
 
 @Entity('teachers')
 export class Teacher {
@@ -25,5 +26,8 @@ export class Teacher {
 
     @OneToMany(() => Student, student => student.teacher)
     students!: Student[];
+
+    @OneToMany(() => Quiz, quiz => quiz.teacher)
+    quizzes!: Quiz[];
 
 }

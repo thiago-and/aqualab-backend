@@ -2,11 +2,13 @@ import type {} from './types/express';
 import express, { Request, Response } from 'express'
 import 'reflect-metadata';
 import { AppDataSource } from './database/data-source';
-import { yearRoutes } from './routes/YearRoutes';
-import { teacherRoutes } from './routes/TeacherRoutes';
-import { studentRoutes } from './routes/StudentRoutes';
+import { yearRoutes } from './routes/year.routes';
+import { teacherRoutes } from './routes/teacher.routes';
+import { studentRoutes } from './routes/student.routes';
 import "dotenv/config";
-import { authRoutes } from './routes/AuthRoutes';
+import { authRoutes } from './routes/auth.routes';
+import { quizRoutes } from './routes/quizzes/quiz.routes'
+import { studentQuizRoutes } from './routes/quizzes/studentQuiz.routes';
 
 const server = express();
 
@@ -16,6 +18,8 @@ server.use("/api", yearRoutes);
 server.use("/api", teacherRoutes);
 server.use("/api", studentRoutes);
 server.use("/api", authRoutes);
+server.use("/api", quizRoutes);
+server.use("/api", studentQuizRoutes);
 
 server.get('/', (req: Request, res: Response) => {
   return res.status(200).json({ message: 'Aqualab Backend is running' });

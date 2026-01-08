@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm";
-import { Student } from "../entities/Student";
+import { Student } from "../entities/users/Student";
 
 
 export class StudentRepository {

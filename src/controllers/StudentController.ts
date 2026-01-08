@@ -1,4 +1,4 @@
-import { Student } from "../entities/Student";
+import { Student } from "../entities/users/Student";
 import { StudentService } from "../services/StudentService";
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
@@ -8,14 +8,12 @@ import { CreateStudentDto } from "../dtos/CreateStudentDto";
 
 export class StudentController {
 
-    studentService: StudentService;
+    private studentService: StudentService;
 
     constructor(studentService: StudentService) {
         this.studentService = studentService;
     }
-
-
-
+    
     createStudent = async (request: Request, response: Response): Promise<Response> => {
 
         const dto = plainToInstance(CreateStudentDto, request.body);
@@ -26,11 +24,6 @@ export class StudentController {
                 errors
             });
         }
-
-        // const studentData = request.body as Partial<Student>;
-        // if (!studentData) {
-        //     return response.status(400).json({ error: "Request body is required" });
-        // }
 
         try {
             const student = await this.studentService.createStudent(dto);

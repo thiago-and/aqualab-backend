@@ -1,8 +1,6 @@
-import { Student } from "../entities/Student";
+import { Student } from "../entities/users/Student";
 import { StudentRepository } from "../repositories/StudendRepository";
 import { CreateStudentDto } from "../dtos/CreateStudentDto";
-import { sign } from "jsonwebtoken";
-import { Year } from "../entities/Year";
 import { YearRepository } from "../repositories/YearRepository";
 
 

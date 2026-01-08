@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
-import { Year } from "../entities/Year";
-import { YearService } from "../services/YearService";
+import { Year } from "../entities/school/Year";
+import { CreateYearDTO, YearService } from "../services/YearService";
 
 
 export class YearController {
     
-    yearService: YearService;
+    private yearService: YearService;
 
     constructor(yearService: YearService) {
         this.yearService = yearService;
     }
 
     createYear = async (request: Request, response: Response): Promise<Response> => {
-        const yearBody = request.body as Partial<Year>;
+        const yearBody = request.body as CreateYearDTO;
         if (!yearBody) {
             return response.status(400).json({ error: "Request body is required" });
         }

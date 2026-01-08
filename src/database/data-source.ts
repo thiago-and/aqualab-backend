@@ -1,15 +1,16 @@
 import { DataSource } from "typeorm";
-import { Year } from "../entities/Year";
-import { Teacher } from "../entities/Teacher";
-import { Student } from "../entities/Student";
 
 export const AppDataSource = new DataSource({
-    type: "sqlite",
-    database: "./src/database/db.sqlite",
-    migrations: ["./src/database/migrations/*.ts"],
-    entities: [
-        Year,
-        Teacher,
-        Student
-    ],
+    type: "mysql",
+    host: "localhost",
+    port: 3306,
+    username: "root",
+    password: "",
+    database: "aqualab",
+
+    synchronize: false,
+    logging: false,
+
+    entities: [__dirname + "/../entities/**/*.{ts,js}"],
+    migrations: [__dirname + "/migrations/**/*.{ts,js}"],
 });

@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Teacher } from "./Teacher";
-import { Student } from "./Student";
+import { Teacher } from "../users/Teacher";
+import { Student } from "../users/Student";
+import { Quiz } from "../quizzes/Quiz";
 
 @Entity('years')
 export class Year {
@@ -12,10 +13,13 @@ export class Year {
     @Column({ nullable: false })
     year!: number;
 
-    @ManyToOne(() => Teacher, teacher => teacher.years)
+    @ManyToOne(() => Teacher, teacher => teacher.years, { nullable: false })
     teacher!: Teacher;
 
     @OneToMany(() => Student, student => student.year)
     students!: Student[];
+
+    @OneToMany(() => Quiz, quiz => quiz.year)
+    quizzes!: Quiz[];
 
 }

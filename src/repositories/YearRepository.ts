@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm";
-import { Year } from "../entities/Year";
+import { Year } from "../entities/school/Year";
 
 export class YearRepository {
 

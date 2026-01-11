@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rimraf ./build && tsc",
     "start": "node build/index.js",
+    "start:prod": "node build/index.js",
     "dev": "ts-node-dev src/server.ts",
     "test": "jest",
     "typeorm": "typeorm-ts-node-commonjs",
@@ -25,7 +26,6 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.16.0",
     "reflect-metadata": "^0.2.2",
-    "sqlite3": "^5.1.7",
     "typeorm": "^0.3.28"
   },
   "devDependencies": {

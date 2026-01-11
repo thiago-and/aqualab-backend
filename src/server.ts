@@ -9,6 +9,7 @@ import "dotenv/config";
 import { authRoutes } from './routes/auth.routes';
 import { quizRoutes } from './routes/quizzes/quiz.routes'
 import { studentQuizRoutes } from './routes/quizzes/studentQuiz.routes';
+import "./config/env";
 
 const server = express();
 
@@ -33,4 +34,4 @@ AppDataSource.initialize()
         console.error("Error during Data Source initialization:", err);
     });
 
-server.listen(3333, () => console.log('Server is running on http://localhost:3333'));
+server.listen(process.env.PORT || 3000, () => console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`));

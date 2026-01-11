@@ -4,7 +4,7 @@
   "description": "Site educativo sobre o ciclo da água",
   "main": "server.js",
   "scripts": {
-    "build": "rimraf ./build && tsc",
+    "build": "rimraf ./build && tsc -p tsconfig.build.json",
     "start": "node build/server.js",
     "start:prod": "node build/server.js",
     "dev": "ts-node-dev src/server.ts",

@@ -5,11 +5,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY . .
+COPY tsconfig*.json ./
+COPY src ./src
+COPY scripts/wait-for-db.sh ./scripts/wait-for-db.sh
 
 RUN npm run build
-RUN chmod +x wait-for-db.sh
+RUN chmod +x scripts/wait-for-db.sh
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "./wait-for-db.sh && npm run migration:run && npm run start"]
+CMD ["sh", "-c", "echo 'Running migrations...' && ./scripts/wait-for-db.sh && npm run migration:run && echo 'Starting API...' && npm run start"]

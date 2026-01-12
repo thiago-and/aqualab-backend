@@ -28,8 +28,12 @@ export class StudentController {
         try {
             const student = await this.studentService.createStudent(dto);
             return response.status(201).json(student);
-        } catch (error) {
-            return response.status(500).json({ error: "Failed to create student. " + error });
+        } catch (error: any) {
+            const message = error?.message || "Failed to create student";
+            if (message.includes("Enrollment number already in use") || error?.code === "ER_DUP_ENTRY") {
+                return response.status(409).json({ error: "Student with the same enrollment number already exists" });
+            }
+            return response.status(500).json({ error: "Failed to create student. " + message });
         }
     }
 

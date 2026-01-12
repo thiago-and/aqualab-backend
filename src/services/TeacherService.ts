@@ -12,9 +12,26 @@ export class TeacherService {
     }
 
     createTeacher = async (teacherData: Partial<Teacher>): Promise<Teacher> => {
-        teacherData.password = await bcrypt.hash(teacherData.password as string, 10);
-        const teacher = await this.teacherRepository.createTeacher(teacherData as Teacher);
-        return teacher;
+        const enrollmentNumber = teacherData.enrollmentNumber as number;
+        const email = teacherData.email as string;
+
+        const existingByEnrollment = await this.teacherRepository.getTeacherByEnrollmentNumber(enrollmentNumber);
+        if (existingByEnrollment) {
+            throw new Error("Enrollment number already in use");
+        }
+
+        const existingByEmail = await this.teacherRepository.getTeacherByEmail(email);
+        if (existingByEmail) {
+            throw new Error("Email already in use");
+        }
+
+        const teacher = new Teacher();
+        teacher.name = teacherData.name as string;
+        teacher.enrollmentNumber = enrollmentNumber;
+        teacher.email = email;
+        teacher.password = await bcrypt.hash(teacherData.password as string, 10);
+
+        return this.teacherRepository.createTeacher(teacher);
     }
 
     getAllTeachers = async (): Promise<Teacher[]> => {

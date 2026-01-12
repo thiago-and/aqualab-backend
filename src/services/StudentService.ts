@@ -20,6 +20,11 @@ export class StudentService {
             throw new Error("Year not found");
         }
 
+        const existingStudent = await this.studentRepository.getStudentByEnrollmentNumber(String(dto.enrollmentNumber));
+        if (existingStudent) {
+            throw new Error("Enrollment number already in use");
+        }
+
         const student = new Student();
         student.name = dto.name;
         student.enrollmentNumber = dto.enrollmentNumber;

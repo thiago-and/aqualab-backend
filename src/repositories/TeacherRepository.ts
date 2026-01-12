@@ -22,6 +22,10 @@ export class TeacherRepository {
         return this.manager.findOne(Teacher, { where: { id } });
     }
 
+    getTeacherByEnrollmentNumber = async (enrollmentNumber: number): Promise<Teacher | null> => {
+        return this.manager.findOne(Teacher, { where: { enrollmentNumber } });
+    }
+
     getTeacherByEmail = async (email: string): Promise<Teacher | null> => {
         return this.manager.findOne(Teacher, { where: { email } });
     }

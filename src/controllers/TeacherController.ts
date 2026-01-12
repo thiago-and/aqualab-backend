@@ -1,4 +1,8 @@
+import { Request, Response } from "express";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
 import { TeacherService } from "../services/TeacherService";
+import { CreateTeacherDto } from "../dtos/CreateTeacherDto";
 
 
 export class TeacherController {
@@ -8,10 +12,26 @@ export class TeacherController {
     constructor(teacherService: TeacherService) {
         this.teacherService = teacherService;
     }
-    createTeacher = async (req: any, res: any): Promise<void> => {
-        const teacherData = req.body;
-        const newTeacher = await this.teacherService.createTeacher(teacherData);
-        res.status(201).json(newTeacher);
+    createTeacher = async (request: Request, response: Response): Promise<Response> => {
+        const dto = plainToInstance(CreateTeacherDto, request.body);
+        const errors = await validate(dto);
+        if (errors.length > 0) {
+            return response.status(400).json({
+                message: "Validation failed",
+                errors
+            });
+        }
+
+        try {
+            const newTeacher = await this.teacherService.createTeacher(dto);
+            return response.status(201).json(newTeacher);
+        } catch (error: any) {
+            const message = error?.message || "Failed to create teacher";
+            if (message.includes("Enrollment number already in use") || message.includes("Email already in use") || error?.code === "ER_DUP_ENTRY") {
+                return response.status(409).json({ error: "Teacher with the same enrollment number or email already exists" });
+            }
+            return response.status(500).json({ error: "Failed to create teacher. " + message });
+        }
     }
 
     getAllTeachers = async (req: any, res: any): Promise<void> => {

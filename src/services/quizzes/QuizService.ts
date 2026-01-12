@@ -162,10 +162,28 @@ export class QuizService {
             throw new Error("Quiz not found.");
         }
 
+        // Si el usuario es profesor y es propietario del quiz, retorna completo
         if (user?.role === "teacher" && quiz.teacher.id === user.id) {
             return quiz;
         }
 
+        // Si el usuario es estudiante o no es propietario, retorna versión pública
+        if (!user || user.role !== "teacher") {
+            return {
+                id: quiz.id,
+                title: quiz.title,
+                questions: quiz.questions.map(q => ({
+                    id: q.id,
+                    statement: q.statement,
+                    options: q.options.map(o => ({
+                        id: o.id,
+                        text: o.text
+                    }))
+                }))
+            };
+        }
+
+        // Si es profesor pero NO es propietario, retorna error implícito (versión pública)
         return {
             id: quiz.id,
             title: quiz.title,
@@ -210,6 +228,7 @@ export class QuizService {
             );
         }
 
+        // Validar que cada pregunta tiene exactamente una opción correcta
         data.questions.forEach(q => {
             if (q.options.filter(o => o.isCorrect).length !== 1) {
                 throw new Error(
@@ -218,17 +237,13 @@ export class QuizService {
             }
         });
 
-        quiz.title = data.title;
-        quiz.year = year;
-        quiz.questions = data.questions.map(q => ({
-            statement: q.statement,
-            options: q.options.map(o => ({
-                text: o.text,
-                isCorrect: o.isCorrect
-            }))
-        })) as any;
-
-        return await this.quizRepository.updateQuiz(quiz);
+        // Usar el nuevo método del repositorio que maneja preguntas correctamente
+        return await this.quizRepository.updateQuizWithQuestions(
+            quizId,
+            data.title,
+            year,
+            data.questions
+        );
     };
 
 

@@ -20,4 +20,9 @@ export class StudentAnswerRepository {
             relations: ["question", "selectedOption"]
         });
     }
+
+    async replaceForAttempt(attemptId: string, answers: StudentAnswer[]) {
+        await this.manager.delete(StudentAnswer, { attempt: { id: attemptId } });
+        return this.manager.save(answers);
+    }
 }

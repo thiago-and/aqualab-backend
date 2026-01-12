@@ -1,16 +1,23 @@
 import type {} from './types/express';
-import express, { Request, Response } from 'express'
+import express, { Request, Response } from 'express';
+import cors from 'cors';
 import 'reflect-metadata';
+import './config/env';
+
 import { AppDataSource } from './database/data-source';
 import { yearRoutes } from './routes/year.routes';
 import { teacherRoutes } from './routes/teacher.routes';
 import { studentRoutes } from './routes/student.routes';
-import "dotenv/config";
 import { authRoutes } from './routes/auth.routes';
-import { quizRoutes } from './routes/quizzes/quiz.routes'
+import { quizRoutes } from './routes/quizzes/quiz.routes';
 import { studentQuizRoutes } from './routes/quizzes/studentQuiz.routes';
+import { quizAttemptRoutes } from './routes/quizzes/quizAttempt.routes';
 
 const server = express();
+
+// CORS aberto (igual à v2); ajustar quando houver lista de domínios confiáveis.
+server.use(cors());
+server.options(/.*/, cors());
 
 server.use(express.json());
 
@@ -20,17 +27,22 @@ server.use("/api", studentRoutes);
 server.use("/api", authRoutes);
 server.use("/api", quizRoutes);
 server.use("/api", studentQuizRoutes);
+server.use("/api", quizAttemptRoutes);
 
 server.get('/', (req: Request, res: Response) => {
-  return res.status(200).json({ message: 'Aqualab Backend is running' });
+  return res.status(200).json({ message: 'Aqualab Backend está em execução' });
 });
+
+const PORT = Number(process.env.PORT) || 3333;
 
 AppDataSource.initialize()
     .then(() => {
-        console.log("Data Source has been initialized!");
+        console.log('🟢 Banco de dados inicializado com sucesso');
+
+        server.listen(PORT, () => {
+            console.log(`🚀 Servidor iniciado em http://localhost:${PORT}`);
+        });
     })
     .catch((err) => {
-        console.error("Error during Data Source initialization:", err);
+        console.error('❌ Erro ao inicializar o banco de dados:', err);
     });
-
-server.listen(3333, () => console.log('Server is running on http://localhost:3333'));

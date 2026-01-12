@@ -14,19 +14,19 @@ export function ensureAuthenticated(
     const authHeader = request.headers.authorization;
 
     if (!authHeader) {
-        return response.status(401).json({ message: "Token not provided" });
+        return response.status(401).json({ message: "Token não fornecido" });
     }
 
     const parts = authHeader.split(" ");
 
     if (parts.length !== 2) {
-        return response.status(401).json({ message: "Token error" });
+        return response.status(401).json({ message: "Erro no token" });
     }
 
     const [scheme, token] = parts;
 
     if (!/^Bearer$/i.test(scheme)) {
-        return response.status(401).json({ message: "Token malformatted" });
+        return response.status(401).json({ message: "Token mal formatado" });
     }
 
     try {
@@ -42,6 +42,6 @@ export function ensureAuthenticated(
 
         return next();
     } catch {
-        return response.status(401).json({ message: "Invalid token" });
+        return response.status(401).json({ message: "Token inválido" });
     }
 }

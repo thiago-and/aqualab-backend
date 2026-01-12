@@ -40,8 +40,20 @@ export class QuizController {
         }
 
         try {
+            const quiz = await this.quizService.getQuizById(quizId);
+            if (!quiz) {
+                return response.status(404).json({ error: "Quiz not found." });
+            }
+            
             await this.quizService.deleteQuiz(quizId, user.id);
-            return response.status(204).send();
+            return response.status(200).json({
+                success: true,
+                message: "Quiz eliminado correctamente",
+                deletedQuiz: {
+                    id: quiz.id,
+                    title: quiz.title
+                }
+            });
         } catch (error: any) {
 
             if (error.message === "Quiz not found.") {
@@ -84,7 +96,7 @@ export class QuizController {
             const quiz = await this.quizService.getQuizById(quizId, user);
             return response.status(200).json(quiz);
         } catch (error: any) {
-            if (error.message === "Quiz não encontrado.") {
+            if (error.message === "Quiz not found." || error.message === "Quiz não encontrado.") {
                 return response.status(404).json({ error: error.message });
             }
 
@@ -124,7 +136,15 @@ export class QuizController {
                 user.id
             );
 
-            return response.status(200).json(quiz);
+            return response.status(200).json({
+                success: true,
+                message: "Quiz actualizado correctamente",
+                quiz: {
+                    id: quiz.id,
+                    title: quiz.title,
+                    questions: quiz.questions.length
+                }
+            });
         } catch (error: any) {
 
             if (error.message === "Quiz not found.") {

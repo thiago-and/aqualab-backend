@@ -120,12 +120,28 @@ export class StudentQuizService {
 
         // calcular nota
         const correctCount = results.filter(r => r.isCorrect).length;
-        const score = Math.round((correctCount / results.length) * 100);
+        const totalQuestions = results.length;
+        const incorrectAnswers = totalQuestions - correctCount;
+        const percentage = Math.round((correctCount / totalQuestions) * 100);
 
-        await this.attemptRepo.finish(attemptId, score);
+        await this.attemptRepo.finish(attemptId, {
+            score: percentage,
+            totalPoints: 100,
+            totalQuestions,
+            correctAnswers: correctCount,
+            incorrectAnswers,
+            percentage,
+            quizTitle: attempt.quiz.title,
+            answersPayload: answers.map(a => ({
+                questionId: a.questionId,
+                optionId: a.optionId,
+                isCorrect: results.find(r => r.questionId === a.questionId)?.isCorrect ?? false
+            })),
+            submittedAt: new Date()
+        });
 
         return {
-            score,
+            score: percentage,
             results
         };
     }

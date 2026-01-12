@@ -1,0 +1,36 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: aqualab-db
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - internal
+
+  api:
+    build: .
+    container_name: aqualab-api
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    networks:
+      - internal
+      - web
+
+volumes:
+  db_data:
+
+networks:
+  internal:
+  web:
+    external: true

@@ -12,12 +12,12 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
 
   entities: isProd
-    ? ["build/entities/**/*.{js}"]
-    : ["src/entities/**/*.{ts}"],
+    ? ["build/**/*.js"]
+    : ["src/**/*.ts"],
 
   migrations: isProd
-    ? ["build/database/migrations/**/*.{js}"]
-    : ["src/database/migrations/**/*.{ts}"],
+    ? ["build/database/migrations/**/*.js"]
+    : ["src/database/migrations/**/*.ts"],
 
   synchronize: false,
   logging: false,

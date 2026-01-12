@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { makeQuizAttemptController } from "../../factories/QuizAttemptFactory";
 import { ensureAuthenticated } from "../../middlewares/ensureAuthenticated";
-import { ensureStudent } from "../../middlewares/EnsureStudent";
-import { ensureTeacher } from "../../middlewares/EnsureTeacher";
+import { ensureStudent } from "../../middlewares/ensureStudent";
+import { ensureTeacher } from "../../middlewares/ensureTeacher";
 
 export const quizAttemptRoutes = Router();
 

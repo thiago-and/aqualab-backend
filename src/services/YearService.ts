@@ -18,8 +18,7 @@ export class YearService {
     }
 
     createYear = async (data: CreateYearDTO): Promise<Year> => {
-        console.log("creating year with data: ");
-        console.log(data);
+        
         const teacher = await this.teacherRepository.getTeacherById(data.teacherId);
 
         if (!teacher) {

@@ -7,7 +7,7 @@ export const teacherRoutes = Router();
 const teacherController = makeTeacherController();
 
 teacherRoutes.post('/teachers', teacherController.createTeacher);
-teacherRoutes.get('/teachers', ensureAuthenticated, teacherController.getAllTeachers);
-teacherRoutes.get('/teachers/:id', ensureAuthenticated, teacherController.getTeacherById);
-teacherRoutes.put('/teachers/:id', ensureAuthenticated, teacherController.updateTeacher);
-teacherRoutes.delete('/teachers/:id', ensureAuthenticated, teacherController.deleteTeacher);
+teacherRoutes.get('/teachers', teacherController.getAllTeachers);
+teacherRoutes.get('/teachers/:id', teacherController.getTeacherById);
+teacherRoutes.put('/teachers/:id', teacherController.updateTeacher);
+teacherRoutes.delete('/teachers/:id', teacherController.deleteTeacher);

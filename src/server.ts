@@ -11,8 +11,19 @@ import { quizRoutes } from './routes/quizzes/quiz.routes'
 import { studentQuizRoutes } from './routes/quizzes/studentQuiz.routes';
 import "./config/env";
 import { quizAttemptRoutes } from './routes/quizzes/quizAttempt.routes';
+import cors from 'cors';
 
 const server = express();
+
+server.use(cors({
+    origin: [
+        "https://aqualab-frontend.vercel.app",
+        "http://localhost:3000"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false
+}));
 
 server.use(express.json());
 

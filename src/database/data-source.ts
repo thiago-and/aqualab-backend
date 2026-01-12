@@ -12,8 +12,8 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
 
   entities: isProd
-    ? ["build/entities/**/*.js"]
-    : ["src/entities/**/*.ts"],
+    ? ["build/**/entities/**/*.js", "build/**/**.entity.js"]
+    : ["src/**/entities/**/*.ts", "src/**/**.entity.ts"],
 
   migrations: isProd
     ? ["build/database/migrations/**/*.js"]

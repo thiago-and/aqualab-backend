@@ -85,6 +85,8 @@ export class QuizService {
         data: CreateQuizDTO,
         teacherId: string
     ): Promise<Quiz> => {
+        console.log("Creating quiz with data: ");
+        console.log(data, teacherId);
 
         const teacher = await this.teacherRepository.getTeacherById(teacherId);
         if (!teacher) {
@@ -95,6 +97,9 @@ export class QuizService {
         if (!year) {
             throw new Error("Year not found.");
         }
+
+        console.log("Year's teacher ID: ");
+        console.log(teacher.id);
 
         if (year.teacher.id !== teacher.id) {
             throw new Error(

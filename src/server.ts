@@ -17,20 +17,9 @@ import { quizAttemptRoutes } from "./routes/quizzes/quizAttempt.routes";
 
 
 const server = express();
-const corsOptions = {
-    origin: [
-        "https://aqualab-frontend.vercel.app",
-        "http://localhost:3000",
-        "http://localhost:5173",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: false,
-};
-
-// CORS for all routes and explicit preflight handling so nginx/proxies pass headers back
-server.use(cors(corsOptions));
-server.options(/.*/, cors(corsOptions));
+// Wide-open CORS (temporary) until tighter configuration is set
+server.use(cors());
+server.options(/.*/, cors());
 
 server.use(express.json());
 

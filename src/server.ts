@@ -30,7 +30,7 @@ const corsOptions = {
 
 // CORS for all routes and explicit preflight handling so nginx/proxies pass headers back
 server.use(cors(corsOptions));
-server.options("*", cors(corsOptions));
+server.options(/.*/, cors(corsOptions));
 
 server.use(express.json());
 

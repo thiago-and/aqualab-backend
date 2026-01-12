@@ -12,12 +12,25 @@ export class YearController {
     }
 
     createYear = async (request: Request, response: Response): Promise<Response> => {
-        const yearBody = request.body as CreateYearDTO;
-        if (!yearBody) {
-            return response.status(400).json({ error: "Request body is required" });
+        const teacherId = request.user?.id;
+        if (!teacherId) {
+            return response.status(401).json({ error: "Authenticated teacher required" });
         }
-        const newYear = await this.yearService.createYear(yearBody);
-        return response.status(201).json(newYear);
+
+        const { year } = request.body || {};
+        const parsedYear = Number(year);
+        if (!Number.isInteger(parsedYear)) {
+            return response.status(400).json({ error: "Field 'year' must be an integer" });
+        }
+
+        try {
+            const payload: CreateYearDTO = { year: parsedYear, teacherId };
+            const newYear = await this.yearService.createYear(payload);
+            return response.status(201).json(newYear);
+        } catch (error: any) {
+            const message = error?.message || "Failed to create year";
+            return response.status(500).json({ error: message });
+        }
     }
 
     getAllYears = async (request: Request, response: Response): Promise<Response> => {

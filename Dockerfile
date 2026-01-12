@@ -36,6 +36,8 @@ FROM node:21-alpine
 
 WORKDIR /app
 
+RUN apk add --no-cache mariadb-client
+
 ENV NODE_ENV=production
 
 COPY --from=build /app/build ./build

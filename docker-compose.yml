@@ -12,6 +12,8 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
     networks:
       - internal
 
@@ -23,14 +25,13 @@ services:
       - .env
     depends_on:
       - mariadb
+    ports:
+      - "3000:3000"
     networks:
       - internal
-      - web
 
 volumes:
   db_data:
 
 networks:
   internal:
-  web:
-    external: true

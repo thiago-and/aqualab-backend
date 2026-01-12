@@ -23,3 +23,6 @@ coverage/
 .vscode/
 # Misc
 *.local
+# Docker compose overrides (local / prod)
+docker-compose.local.yml
+docker-compose.prod.yml

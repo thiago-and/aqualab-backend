@@ -13,6 +13,8 @@ import { studentRoutes } from "./routes/student.routes";
 import { authRoutes } from "./routes/auth.routes";
 import { quizRoutes } from "./routes/quizzes/quiz.routes";
 import { studentQuizRoutes } from "./routes/quizzes/studentQuiz.routes";
+import { quizAttemptRoutes } from "./routes/quizzes/quizAttempt.routes";
+
 
 const server = express();
 
@@ -34,6 +36,7 @@ server.use("/api", studentRoutes);
 server.use("/api", authRoutes);
 server.use("/api", quizRoutes);
 server.use("/api", studentQuizRoutes);
+server.use("/api", quizAttemptRoutes);
 
 server.get("/", (_, res) => {
     res.json({ message: "Aqualab Backend is running" });

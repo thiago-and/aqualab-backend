@@ -22,6 +22,7 @@ server.use(cors({
     origin: [
         "https://aqualab-frontend.vercel.app",
         "http://localhost:3000",
+        "http://localhost:5173",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

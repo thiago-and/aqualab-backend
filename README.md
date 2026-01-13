@@ -28,6 +28,8 @@ JWT_EXPIRES_IN=1d
 
 ## Install & run
 ```bash
+git clone https://github.com/thiago-and/aqualab-backend
+cd aqualab-backend
 npm install
 npm run migration:run (database needs to be up)
 npm run build

@@ -1,5 +1,7 @@
 import { EntityManager } from "typeorm";
 import { Quiz } from "../../entities/quizzes/Quiz";
+import { Question } from "../../entities/quizzes/Question";
+import { Option } from "../../entities/quizzes/Option";
 import { QuizAttemptStatus } from "../../entities/quizzes/QuizAttempt";
 
 export class QuizRepository {
@@ -37,7 +39,7 @@ export class QuizRepository {
     getQuizById = async (quizId: string): Promise<Quiz | null> => {
         return this.manager.findOne(Quiz, {
             where: { id: quizId },
-            relations: ["teacher", "questions", "questions.options"]
+            relations: ["teacher", "year", "questions", "questions.options"]
         });
     };
 
@@ -56,6 +58,51 @@ export class QuizRepository {
 
     updateQuiz = async (quiz: Quiz): Promise<Quiz> => {
         return this.manager.save(Quiz, quiz);
+    }
+
+    // Nuevo método para actualizar quiz con preguntas y opciones
+    async updateQuizWithQuestions(
+        quizId: string,
+        title: string,
+        year: any,
+        questions: Array<{
+            statement: string;
+            options: Array<{ text: string; isCorrect: boolean }>;
+        }>
+    ): Promise<Quiz> {
+        // 1. Eliminar todas las preguntas antiguas (cascada elimina opciones)
+        await this.manager.delete(Question, { quiz: { id: quizId } });
+
+        // 2. Actualizar el quiz básico
+        const quiz = await this.getQuizById(quizId);
+        if (!quiz) throw new Error("Quiz not found");
+
+        quiz.title = title;
+        quiz.year = year;
+        
+        // 3. Guardar quiz actualizado
+        await this.manager.save(Quiz, quiz);
+
+        // 4. Crear y guardar nuevas preguntas
+        const newQuestions = questions.map(q => {
+            const question = new Question();
+            question.quiz = quiz;
+            question.statement = q.statement;
+            question.options = q.options.map(o => {
+                const option = new Option();
+                option.text = o.text;
+                option.isCorrect = o.isCorrect;
+                option.question = question;
+                return option;
+            });
+            return question;
+        });
+
+        // Guardar todas las preguntas (con cascada se guardan las opciones)
+        await this.manager.save(Question, newQuestions);
+
+        // 5. Retornar el quiz actualizado con las nuevas preguntas
+        return this.getQuizById(quizId) as Promise<Quiz>;
     }
 
 

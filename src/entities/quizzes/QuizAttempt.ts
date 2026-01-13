@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Student } from "../users/Student";
 import { Quiz } from "./Quiz";
 import { StudentAnswer } from "./StudentAnswer";
@@ -9,6 +9,7 @@ export enum QuizAttemptStatus {
 }
 
 @Entity("quiz_attempts")
+@Unique(["student", "quiz"])
 export class QuizAttempt {
 
   @PrimaryGeneratedColumn("uuid")
@@ -29,6 +30,13 @@ export class QuizAttempt {
   })
   answers!: StudentAnswer[];
 
+  @Column({ name: "answers", type: "json", nullable: true })
+  answersPayload?: Array<{
+    questionId: string;
+    optionId: string;
+    isCorrect: boolean;
+  }>;
+
   @Column({
     type: "enum",
     enum: QuizAttemptStatus,
@@ -36,10 +44,34 @@ export class QuizAttempt {
   })
   status!: QuizAttemptStatus;
 
+  @Column({ length: 255, nullable: true })
+  quizTitle?: string;
+
   @Column({ type: "float", default: 0 })
   score!: number;
 
+  @Column({ type: "int", default: 100 })
+  totalPoints!: number;
+
+  @Column({ type: "int", default: 0 })
+  totalQuestions!: number;
+
+  @Column({ type: "int", default: 0 })
+  correctAnswers!: number;
+
+  @Column({ type: "int", default: 0 })
+  incorrectAnswers!: number;
+
+  @Column({ type: "float", default: 0 })
+  percentage!: number;
+
   @CreateDateColumn()
   createdAt!: Date;
+
+  @Column({ type: "datetime", nullable: true })
+  submittedAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }
 

@@ -1,134 +1,86 @@
 # Aqualab Backend
 
-## Visão Geral
-O Aqualab Backend é uma API REST em TypeScript que modela um sistema educacional sobre o ciclo da água. Ele organiza alunos, professores e séries (anos escolares) usando o TypeORM com SQLite, aplica validações com `class-validator` e protege as rotas sensíveis com autenticação JWT.
+Node/Express + TypeORM API for the Aqualab educational platform (Aqualab - Laboratório da EE Barão Ramalho). Provides authentication, teacher/student/year management, quizzes and attempts.
 
-## Tecnologias principais
-- Node.js + TypeScript
-- Express 5 com middlewares customizados
-- TypeORM (SQLite, migrações e entidades)
-- JWT para autenticação e `bcryptjs` para hash de senhas
-- `class-transformer` + `class-validator` para DTOs
-- Jest + ts-jest para testes unitários
+## Tech stack
+- Node.js + Express (ES modules via TypeScript build output)
+- TypeORM (MySQL; sqlite available for lightweight use)
+- JWT auth (Bearer)
+- Class-validator/transformer for DTO validation
 
-## Estrutura do projeto
-- `src/server.ts`: ponto de entrada, inicializa o TypeORM e monta os `Router`s em `/api`.
-- `routes/*`: expõe os endpoints organizados por recurso (Auth, Students, Teachers, Years).
-- `controllers/*`: recebem o request, aplicam a validação e devolvem respostas HTTP.
-- `services/*`: contêm as regras de negócio e orquestram repositórios.
-- `repositories/*`: operam diretamente sobre o banco via `EntityManager` do TypeORM.
-- `entities/*`: mapeiam as tabelas `students`, `teachers` e `years`.
-- `dtos/*`: definem o contrato de entrada para criação/atualização.
-- `middlewares/*`: cuidam da autenticação (`authMiddleware`) e controle de papel (`ensureTeacher`).
-- `database/data-source.ts`: configuração do TypeORM apontada para `./src/database/db.sqlite`.
+## Requirements
+- Node 18+
+- MySQL 8+ (or compatible like MariaDB) with a database created (default: `aqualab`)
+- `npm` or `yarn`
 
-## Configuração e execução
-### Pré-requisitos
-- Node.js 18+ compatível com `npm`.
-- Ambiente que suporte SQLite (arquivo `db.sqlite` criado automaticamente pelo TypeORM).
+## Environment variables
+Required (see build/config/env.js):
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
+- `NODE_ENV`
+- `PORT` (API listen port; defaults to 3000 if unset)
+- `JWT_SECRET`, `JWT_EXPIRES_IN`
 
-### Variáveis de ambiente obrigatórias
-Crie um `.env` na raiz com pelo menos:
-```
-JWT_SECRET=algum-segredo-curto-mas-forte
+Create a `.env` file (see `.env.example`) before running the app:
+```env
+JWT_SECRET=super-secret-key
+JWT_EXPIRES_IN=1d
 ```
 
-### Passos de instalação
-1. `npm install`
-2. `npm run migration:run` (aplica as migrations em `src/database/migrations`).
-3. `npm run dev` (usa `ts-node-dev` e sobe o servidor em `http://localhost:3333`).
+## Install & run
+```bash
+npm install
+npm run migration:run (database needs to be up)
+npm run build
+npm start
+```
+Dev mode with hot reload:
+```bash
+npm run migration:run
+npm run dev
+```
 
-### Scripts úteis
-| Comando | Finalidade |
-| --- | --- |
-| `npm run dev` | Dev server com reload rápido. |
-| `npm run build` | Limpa `./build` e compila TS. |
-| `npm run start` | Executa `build/index.js` após um `npm run build`. |
-| `npm run test` | Executa os testes Jest. |
-| `npm run migration:run` | Aplica migrações no banco SQLite. |
-| `npm run migration:revert` | Desfaz a última migration aplicada. |
-| `npm run migration:create` / `migration:generate` | Cria novas migrations com o CLI do TypeORM. |
+## Database
+TypeORM config is in `src/database/data-source.ts` (defaults: host `localhost`, port `3306`, user `root`, db `aqualab`). Update it or use env-driven overrides if you adjust the data source.
+Example MySQL Docker:
+```bash
+docker run -d \
+  --name mysql \
+  -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+  -e MYSQL_DATABASE=aqualab \
+  -p 3306:3306 \
+  -v /opt/aqualab/mysql-data:/var/lib/mysql \ #(for windows use path like C:/aqualab/mysql-data:/var/lib/mysql)
+  mysql:lts \
+  --character-set-server=utf8mb4 \
+  --collation-server=utf8mb4_unicode_ci
+```
 
-## Modelo de domínio
-### Student (`students`)
-- `id`: UUID gerado automaticamente.
-- `name`: string obrigatória.
-- `enrollmentNumber`: número único obrigatório.
-- `year`: relação ManyToOne com `Year`.
-- `teacher`: relação ManyToOne com `Teacher` (opcional).
+Migrations (adjust datasource path if moved):
+```bash
+npm run migration:generate -- NameHere
+npm run migration:run
+npm run migration:revert
+```
 
-### Teacher (`teachers`)
-- `id`, `name`, `enrollmentNumber`, `email`, `password` (bcrypt com `salt=10`).
-- `years`: OneToMany para `Year`.
-- `students`: OneToMany para `Student`.
+## API overview (prefix: `/api`)
+- Auth: `POST /auth/login`
+- Teachers: `POST /teachers` (public signup), `GET/PUT/DELETE /teachers/:id` (auth)
+- Students: `POST /students` (teacher-auth), `GET /students`, etc.
+- Years: `POST /years`, `GET /years`, `PUT /years/:id`, `DELETE /years/:id` (teacher-auth)
+- Quizzes: `POST /quizzes`, `GET /quizzes`, `GET /quizzes/:id`, `PUT/DELETE /quizzes/:id` (auth; teacher-only for write)
+- Student quizzes: `GET /quizzes/student/:studentId` lists available quizzes for the authenticated student
+- Quiz attempts: see routes under `src/routes/quizzes`
 
-### Year (`years`)
-- `year`: número da série (ex: 1, 2, 3).
-- `teacher`: ManyToOne com o professor responsável.
-- `students`: OneToMany com alunos.
+Auth middleware requires `Authorization: Bearer <token>`; `ensureTeacher` restricts teacher-only actions.
 
-### DTOs básicos
-- `CreateStudentDto`: exige `name`, `enrollmentNumber` e `year` (todos obrigatórios). Usa `class-validator`.
-- `UpdateStudentDto`: contempla campos `name`, `enrollmentNumber`, `yearId` como opcionais.
-- `CreateTeacherDto`: exige `name`, `enrollmentNumber`, `email` válido e `password` com ao menos 5 caracteres.
-- `UpdateTeacherDto`: permite atualizar `name`, `enrollmentNumber`, `password` e `yearId` sem obrigatoriedade.
+## CORS
+Currently wide open (`cors()` with OPTIONS handler) in `src/server.ts`. Tighten origins/methods as needed for production.
 
-## Fluxo de requisição
-1. `server.ts` inicializa o `AppDataSource` e monta os routers em `/api`.
-2. Cada rota usa uma factory (`makeStudentController`, etc.) para criar controller → service → repositório.
-3. Controllers recebem o `Request`, aplicam validação ou verificações manuais e delegam para os services.
-4. Services usam repositories para consultar/alterar o banco e, quando necessário, `AuthService` gera tokens JWT (com `expiresIn: 1d`).
-5. `authMiddleware` verifica o header `Authorization: Bearer <token>` usando `JWT_SECRET`, popula `request.user` e `ensureTeacher` impede acessos de alunos.
 
-## Referência da API
-### Autenticação
-| Método | Endpoint | Corpo esperado | Retorno | Observações |
-| --- | --- | --- | --- | --- |
-| POST | `/api/auth/teacher/login` | `{ "email": string, "password": string }` | `{ "token": string }` | Gera JWT com `role: teacher`. |
-| POST | `/api/auth/student/login` | `{ "enrollmentNumber": number }` | `{ "token": string }` | Gera JWT com `role: student`. |
-
-### Students
-| Método | Endpoint | Descrição |
-| --- | --- | --- |
-| POST | `/api/students` | Cria aluno (body com `name`, `enrollmentNumber`, `year`). |
-| GET | `/api/students` | Lista todos os alunos com relações (year, teacher). |
-| GET | `/api/students/:id` | Recupera um aluno específico (UUID). |
-| PUT | `/api/students/:id` | Atualiza campos parciais do aluno. |
-| DELETE | `/api/students/:id` | Exclui o aluno (204). |
-
-### Teachers
-| Método | Endpoint | Descrição |
-| --- | --- | --- |
-| POST | `/api/teachers` | Cria professor (hash `password`). |
-| GET | `/api/teachers` | Lista todos os professores. |
-| GET | `/api/teachers/:id` | Retorna professor por UUID. |
-| PUT | `/api/teachers/:id` | Atualiza campos. |
-| DELETE | `/api/teachers/:id` | Remove professor. |
-
-### Years (exigem token de professor)
-| Método | Endpoint | Descrição | Autenticação |
-| --- | --- | --- | --- |
-| POST | `/api/years` | Cria uma série (`{ "year": number }`). | `Bearer <token>` com `role: teacher` |
-| GET | `/api/years` | Lista séries com professores e alunos. | mesmo token |
-| GET | `/api/years/:id` | Retorna série por número (rodando `getYearByYear`). | mesmo token |
-| PUT | `/api/years/:id` | Atualiza série. | mesmo token |
-| DELETE | `/api/years/:id` | Remove série. | mesmo token |
-
-## Autorização e segurança
-- A autenticação define `request.user` com `{ id, role }`.
-- `ensureTeacher` garante que apenas tokens com `role: teacher` acessem as rotas de séries.
-- Tokens expiram em 1 dia (`expiresIn: "1d"`).
-- O corpo das requisições é validado com os DTOs antes de chegar ao repositório.
-
-## Banco de dados e migrações
-- O arquivo `AppDataSource` aponta para `./src/database/db.sqlite` e carrega as entidades.
-- Migrations ficam em `src/database/migrations`. Rode `npm run migration:run` para aplicar todas.
-- Para resetar o banco, delete `db.sqlite` e rode a migration novamente.
-
-## Testes
-- `npm run test` dispara os testes Jest/ts-jest e respeita os arquivos `jest.config.ts` e `tsconfig.json`.
-
-## Considerações finais
-- Todas as rotas de CRUD seguem o padrão controller → service → repository com dependências resolvidas nas factories.
-- Garanta que `JWT_SECRET` esteja definido antes de iniciar o servidor, pois a autenticação falha sem ele.
-- O servidor responde em `http://localhost:3333` e expõe `/api` para os recursos descritos.
+## Project layout
+- `src/server.ts` – app bootstrap and routing
+- `src/routes` – Express route definitions
+- `src/controllers` – HTTP controllers
+- `src/services` – business logic
+- `src/repositories` – data access (TypeORM EntityManager)
+- `src/entities` – TypeORM entities
+- `src/database` – data source and migrations
